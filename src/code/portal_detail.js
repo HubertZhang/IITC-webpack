@@ -9,24 +9,24 @@
 var cache;
 var requestQueue = {};
 
-window.portalDetail = function() {};
+window.portalDetail = function () { };
 
-window.portalDetail.setup = function() {
+window.portalDetail.setup = function () {
   cache = new DataCache();
 
   cache.startExpireInterval(20);
 }
 
-window.portalDetail.get = function(guid) {
+window.portalDetail.get = function (guid) {
   return cache.get(guid);
 }
 
-window.portalDetail.isFresh = function(guid) {
+window.portalDetail.isFresh = function (guid) {
   return cache.isFresh(guid);
 }
 
 
-var handleResponse = function(deferred, guid, data, success) {
+var handleResponse = function (deferred, guid, data, success) {
   if (!data || data.error || !data.result) {
     success = false;
   }
@@ -36,9 +36,9 @@ var handleResponse = function(deferred, guid, data, success) {
     var dict = decodeArray.portalDetail(data.result);
 
     // entity format, as used in map data
-    var ent = [guid,dict.timestamp,data.result];
+    var ent = [guid, dict.timestamp, data.result];
 
-    cache.store(guid,dict);
+    cache.store(guid, dict);
 
     //FIXME..? better way of handling sidebar refreshing...
 
@@ -47,7 +47,7 @@ var handleResponse = function(deferred, guid, data, success) {
     }
 
     deferred.resolve(dict);
-    window.runHooks ('portalDetailLoaded', {guid:guid, success:success, details:dict, ent:ent});
+    window.runHooks('portalDetailLoaded', { guid: guid, success: success, details: dict, ent: ent });
 
   } else {
     if (data && data.error == "RETRY") {
@@ -55,24 +55,24 @@ var handleResponse = function(deferred, guid, data, success) {
       doRequest(deferred, guid);
     } else {
       deferred.reject();
-      window.runHooks ('portalDetailLoaded', {guid:guid, success:success});
+      window.runHooks('portalDetailLoaded', { guid: guid, success: success });
     }
   }
 
 }
 
-var doRequest = function(deferred, guid) {
-  window.postAjax('getPortalDetails', {guid:guid},
-    function(data,textStatus,jqXHR) { handleResponse(deferred, guid, data, true); },
-    function() { handleResponse(deferred, guid, undefined, false); }
+var doRequest = function (deferred, guid) {
+  window.postAjax('getPortalDetails', { guid: guid },
+    function (data, textStatus, jqXHR) { handleResponse(deferred, guid, data, true); },
+    function () { handleResponse(deferred, guid, undefined, false); }
   );
 }
 
-window.portalDetail.request = function(guid) {
+window.portalDetail.request = function (guid) {
   if (!requestQueue[guid]) {
     var deferred = $.Deferred();
     requestQueue[guid] = deferred.promise();
-    deferred.always(function() { delete requestQueue[guid]; });
+    deferred.always(function () { delete requestQueue[guid]; });
 
     doRequest(deferred, guid);
   }

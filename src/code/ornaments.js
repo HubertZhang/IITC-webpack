@@ -52,7 +52,7 @@ window.ornaments = {
           icon: L.icon({
             iconUrl: '//commondatastorage.googleapis.com/ingress.com/img/map_icons/marker_images/' + ornament + '.png',
             iconSize: [size, size],
-            iconAnchor: [size/2, size/2] // https://github.com/IITC-CE/Leaflet.Canvas-Markers/issues/4
+            iconAnchor: [size / 2, size / 2] // https://github.com/IITC-CE/Leaflet.Canvas-Markers/issues/4
           }),
           interactive: false,
           keyboard: false,

@@ -8,19 +8,19 @@
 // success: method to call on success. See jQuery API docs for avail-
 //          able arguments: http://api.jquery.com/jQuery.ajax/
 // error: see above. Additionally it is logged if the request failed.
-window.postAjax = function(action, data, successCallback, errorCallback) {
+window.postAjax = function (action, data, successCallback, errorCallback) {
   // state management functions... perhaps should be outside of this func?
 
-//  var remove = function(data, textStatus, jqXHR) { window.requests.remove(jqXHR); };
-//  var errCnt = function(jqXHR) { window.failedRequestCount++; window.requests.remove(jqXHR); };
+  //  var remove = function(data, textStatus, jqXHR) { window.requests.remove(jqXHR); };
+  //  var errCnt = function(jqXHR) { window.failedRequestCount++; window.requests.remove(jqXHR); };
 
-  if (window.latestFailedRequestTime && window.latestFailedRequestTime < Date.now()-120*1000) {
+  if (window.latestFailedRequestTime && window.latestFailedRequestTime < Date.now() - 120 * 1000) {
     // no errors in the last two minutes - clear the error count
     window.failedRequestCount = 0;
     window.latestFailedRequestTime = undefined;
   }
 
-  var onError = function(jqXHR, textStatus, errorThrown) {
+  var onError = function (jqXHR, textStatus, errorThrown) {
     window.requests.remove(jqXHR);
     window.failedRequestCount++;
 
@@ -32,7 +32,7 @@ window.postAjax = function(action, data, successCallback, errorCallback) {
     }
   };
 
-  var onSuccess = function(data, textStatus, jqXHR) {
+  var onSuccess = function (data, textStatus, jqXHR) {
     window.requests.remove(jqXHR);
 
     // the Niantic server can return a HTTP success, but the JSON response contains an error. handle that sensibly
@@ -58,16 +58,16 @@ window.postAjax = function(action, data, successCallback, errorCallback) {
     if (errorCallback) {
       // NOTE: error called on a setTimeout - as it won't be expected to be synchronous
       // ensures no recursion issues if the error handler immediately resends the request
-      setTimeout(function(){errorCallback(null, undefined, "window.blockOutOfDateRequests is set");}, 10);
+      setTimeout(function () { errorCallback(null, undefined, "window.blockOutOfDateRequests is set"); }, 10);
     }
     return;
   }
 
   var versionStr = niantic_params.CURRENT_VERSION;
-  var post_data = JSON.stringify($.extend({}, data, {v: versionStr}));
+  var post_data = JSON.stringify($.extend({}, data, { v: versionStr }));
 
   var result = $.ajax({
-    url: '/r/'+action,
+    url: '/r/' + action,
     type: 'POST',
     data: post_data,
     context: data,
@@ -75,7 +75,7 @@ window.postAjax = function(action, data, successCallback, errorCallback) {
     success: [onSuccess],
     error: [onError],
     contentType: 'application/json; charset=utf-8',
-    beforeSend: function(req) {
+    beforeSend: function (req) {
       req.setRequestHeader('X-CSRFToken', readCookie('csrftoken'));
     }
   });
@@ -87,20 +87,19 @@ window.postAjax = function(action, data, successCallback, errorCallback) {
 }
 
 
-window.outOfDateUserPrompt = function()
-{
-  // we block all requests while the dialog is open. 
+window.outOfDateUserPrompt = function () {
+  // we block all requests while the dialog is open.
   if (!window.blockOutOfDateRequests) {
     window.blockOutOfDateRequests = true;
 
     dialog({
       title: 'Reload IITC',
       html: '<p>IITC is using an outdated version code. This will happen when Niantic updates the standard intel site.</p>'
-           +'<p>You need to reload the page to get the updated changes.</p>'
-           +'<p>If you have just reloaded the page, then an old version of the standard site script is cached somewhere.'
-           +'In this case, try clearing your cache, or waiting 15-30 minutes for the stale data to expire.</p>',
+        + '<p>You need to reload the page to get the updated changes.</p>'
+        + '<p>If you have just reloaded the page, then an old version of the standard site script is cached somewhere.'
+        + 'In this case, try clearing your cache, or waiting 15-30 minutes for the stale data to expire.</p>',
       buttons: {
-        'RELOAD': function() {
+        'RELOAD': function () {
           if (typeof android !== 'undefined' && android && android.reloadIITC) {
             android.reloadIITC();
           } else {
@@ -108,7 +107,7 @@ window.outOfDateUserPrompt = function()
           }
         }
       },
-      close: function(event, ui) {
+      close: function (event, ui) {
         delete window.blockOutOfDateRequests;
       }
 

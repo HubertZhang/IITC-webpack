@@ -10,14 +10,14 @@ window._current_highlighter = localStorage.portal_highlighter;
 window._no_highlighter = 'No Highlights';
 
 
-window.addPortalHighlighter = function(name, data) {
-  if(_highlighters === null) {
+window.addPortalHighlighter = function (name, data) {
+  if (_highlighters === null) {
     _highlighters = {};
   }
 
   // old-format highlighters just passed a callback function. this is the same as just a highlight method
   if (!data.highlight) {
-    data = {highlight: data}
+    data = { highlight: data }
   }
 
   _highlighters[name] = data;
@@ -25,7 +25,7 @@ window.addPortalHighlighter = function(name, data) {
   if (typeof android !== 'undefined' && android && android.addPortalHighlighter)
     android.addPortalHighlighter(name);
 
-  if(window._current_highlighter === undefined) {
+  if (window._current_highlighter === undefined) {
     _current_highlighter = name;
   }
 
@@ -33,7 +33,7 @@ window.addPortalHighlighter = function(name, data) {
     if (typeof android !== 'undefined' && android && android.setActiveHighlighter)
       android.setActiveHighlighter(name);
 
-    // call the setSelected callback 
+    // call the setSelected callback
     if (_highlighters[_current_highlighter].setSelected) {
       _highlighters[_current_highlighter].setSelected(true);
     }
@@ -43,32 +43,32 @@ window.addPortalHighlighter = function(name, data) {
 }
 
 // (re)creates the highlighter dropdown list
-window.updatePortalHighlighterControl = function() {
+window.updatePortalHighlighterControl = function () {
   if (typeof android !== 'undefined' && android && android.addPortalHighlighter) {
     $('#portal_highlight_select').remove();
     return;
   }
 
-  if(_highlighters !== null) {
-    if($('#portal_highlight_select').length === 0) {
+  if (_highlighters !== null) {
+    if ($('#portal_highlight_select').length === 0) {
       $("body").append("<select id='portal_highlight_select'></select>");
-      $("#portal_highlight_select").change(function(){ changePortalHighlights($(this).val());});
+      $("#portal_highlight_select").change(function () { changePortalHighlights($(this).val()); });
       $(".leaflet-top.leaflet-left").css('padding-top', '20px');
-      $(".leaflet-control-scale-line").css('margin-top','25px');
+      $(".leaflet-control-scale-line").css('margin-top', '25px');
     }
     $("#portal_highlight_select").html('');
-    $("#portal_highlight_select").append($("<option>").attr('value',_no_highlighter).text(_no_highlighter));
+    $("#portal_highlight_select").append($("<option>").attr('value', _no_highlighter).text(_no_highlighter));
     var h_names = Object.keys(_highlighters).sort();
-    
-    $.each(h_names, function(i, name) {  
-      $("#portal_highlight_select").append($("<option>").attr('value',name).text(name));
+
+    $.each(h_names, function (i, name) {
+      $("#portal_highlight_select").append($("<option>").attr('value', name).text(name));
     });
 
     $("#portal_highlight_select").val(_current_highlighter);
   }
 }
 
-window.changePortalHighlights = function(name) {
+window.changePortalHighlights = function (name) {
 
   // first call any previous highlighter select callback
   if (_current_highlighter && _highlighters[_current_highlighter] && _highlighters[_current_highlighter].setSelected) {
@@ -88,15 +88,15 @@ window.changePortalHighlights = function(name) {
   localStorage.portal_highlighter = name;
 }
 
-window.highlightPortal = function(p) {
-  
-  if(_highlighters !== null && _highlighters[_current_highlighter] !== undefined) {
-    _highlighters[_current_highlighter].highlight({portal: p});
+window.highlightPortal = function (p) {
+
+  if (_highlighters !== null && _highlighters[_current_highlighter] !== undefined) {
+    _highlighters[_current_highlighter].highlight({ portal: p });
   }
 }
 
-window.resetHighlightedPortals = function() {
-  $.each(portals, function(guid, portal) {
+window.resetHighlightedPortals = function () {
+  $.each(portals, function (guid, portal) {
     setMarkerStyle(portal, guid === selectedPortal);
   });
 }

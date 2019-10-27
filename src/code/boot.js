@@ -7,7 +7,7 @@ window.setupLargeImagePreview = function () {
   $('#portaldetails').on('click', '.imgpreview', function (e) {
     var img = this.querySelector('img');
     //dialogs have 12px padding around the content
-    var dlgWidth = Math.max(img.naturalWidth+24,500);
+    var dlgWidth = Math.max(img.naturalWidth + 24, 500);
     // This might be a case where multiple dialogs make sense, for example
     // someone might want to compare images of multiple portals.  But
     // usually we only want to show one version of each image.
@@ -29,34 +29,34 @@ window.setupLargeImagePreview = function () {
 
 // adds listeners to the layer chooser such that a long press hides
 // all custom layers except the long pressed one.
-window.setupLayerChooserSelectOne = function() {
-  $('.leaflet-control-layers-overlays').on('click taphold', 'label', function(e) {
-    if(!e) return;
-    if(!(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.type === 'taphold')) return;
+window.setupLayerChooserSelectOne = function () {
+  $('.leaflet-control-layers-overlays').on('click taphold', 'label', function (e) {
+    if (!e) return;
+    if (!(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.type === 'taphold')) return;
     var m = window.map;
 
-    var add = function(layer) {
-      if(!m.hasLayer(layer.layer)) m.addLayer(layer.layer);
+    var add = function (layer) {
+      if (!m.hasLayer(layer.layer)) m.addLayer(layer.layer);
     };
-    var rem = function(layer) {
-      if(m.hasLayer(layer.layer)) m.removeLayer(layer.layer);
+    var rem = function (layer) {
+      if (m.hasLayer(layer.layer)) m.removeLayer(layer.layer);
     };
 
     var isChecked = $(e.target).find('input').is(':checked');
     var checkSize = $('.leaflet-control-layers-overlays input:checked').length;
-    if((isChecked && checkSize === 1) || checkSize === 0) {
+    if ((isChecked && checkSize === 1) || checkSize === 0) {
       // if nothing is selected or the users long-clicks the only
       // selected element, assume all boxes should be checked again
-      $.each(window.layerChooser._layers, function(ind, layer) {
-        if(!layer.overlay) return true;
+      $.each(window.layerChooser._layers, function (ind, layer) {
+        if (!layer.overlay) return true;
         add(layer);
       });
     } else {
       // uncheck all
       var keep = $.trim($(e.target).text());
-      $.each(window.layerChooser._layers, function(ind, layer) {
-        if(layer.overlay !== true) return true;
-        if(layer.name === keep) { add(layer);  return true; }
+      $.each(window.layerChooser._layers, function (ind, layer) {
+        if (layer.overlay !== true) return true;
+        if (layer.name === keep) { add(layer); return true; }
         rem(layer);
       });
     }
@@ -65,45 +65,45 @@ window.setupLayerChooserSelectOne = function() {
 }
 
 // Setup the function to record the on/off status of overlay layerGroups
-window.setupLayerChooserStatusRecorder = function() {
+window.setupLayerChooserStatusRecorder = function () {
   // Record already added layerGroups
-  $.each(window.layerChooser._layers, function(ind, chooserEntry) {
-    if(!chooserEntry.overlay) return true;
+  $.each(window.layerChooser._layers, function (ind, chooserEntry) {
+    if (!chooserEntry.overlay) return true;
     var display = window.map.hasLayer(chooserEntry.layer);
     window.updateDisplayedLayerGroup(chooserEntry.name, display);
   });
 
   // Record layerGroups change
-  window.map.on('overlayadd overlayremove', function(e) {
+  window.map.on('overlayadd overlayremove', function (e) {
     var display = (e.type === 'overlayadd');
     window.updateDisplayedLayerGroup(e.name, display);
   });
 }
 
-window.setupStyles = function() {
+window.setupStyles = function () {
   $('head').append('<style>' +
-    [ '#largepreview.enl img { border:2px solid '+COLORS[TEAM_ENL]+'; } ',
-      '#largepreview.res img { border:2px solid '+COLORS[TEAM_RES]+'; } ',
-      '#largepreview.none img { border:2px solid '+COLORS[TEAM_NONE]+'; } ',
-      '#chatcontrols { bottom: '+(CHAT_SHRINKED+22)+'px; }',
-      '#chat { height: '+CHAT_SHRINKED+'px; } ',
-      '.leaflet-right { margin-right: '+(SIDEBAR_WIDTH+1)+'px } ',
-      '#updatestatus { width:'+(SIDEBAR_WIDTH+2)+'px;  } ',
-      '#sidebar { width:'+(SIDEBAR_WIDTH + HIDDEN_SCROLLBAR_ASSUMED_WIDTH + 1 /*border*/)+'px;  } ',
-      '#sidebartoggle { right:'+(SIDEBAR_WIDTH+1)+'px;  } ',
-      '#scrollwrapper  { width:'+(SIDEBAR_WIDTH + 2*HIDDEN_SCROLLBAR_ASSUMED_WIDTH)+'px; right:-'+(2*HIDDEN_SCROLLBAR_ASSUMED_WIDTH-2)+'px } ',
-      '#sidebar > * { width:'+(SIDEBAR_WIDTH+1)+'px;  }'].join("\n")
+    ['#largepreview.enl img { border:2px solid ' + COLORS[TEAM_ENL] + '; } ',
+    '#largepreview.res img { border:2px solid ' + COLORS[TEAM_RES] + '; } ',
+    '#largepreview.none img { border:2px solid ' + COLORS[TEAM_NONE] + '; } ',
+    '#chatcontrols { bottom: ' + (CHAT_SHRINKED + 22) + 'px; }',
+    '#chat { height: ' + CHAT_SHRINKED + 'px; } ',
+    '.leaflet-right { margin-right: ' + (SIDEBAR_WIDTH + 1) + 'px } ',
+    '#updatestatus { width:' + (SIDEBAR_WIDTH + 2) + 'px;  } ',
+    '#sidebar { width:' + (SIDEBAR_WIDTH + HIDDEN_SCROLLBAR_ASSUMED_WIDTH + 1 /*border*/) + 'px;  } ',
+    '#sidebartoggle { right:' + (SIDEBAR_WIDTH + 1) + 'px;  } ',
+    '#scrollwrapper  { width:' + (SIDEBAR_WIDTH + 2 * HIDDEN_SCROLLBAR_ASSUMED_WIDTH) + 'px; right:-' + (2 * HIDDEN_SCROLLBAR_ASSUMED_WIDTH - 2) + 'px } ',
+    '#sidebar > * { width:' + (SIDEBAR_WIDTH + 1) + 'px;  }'].join("\n")
     + '</style>');
 }
 
-window.setupIcons = function() {
+window.setupIcons = function () {
   $(['<svg>',
-      // Material Icons
+    // Material Icons
 
-      // portal_detail_display.js
-      '<symbol id="ic_place_24px" viewBox="0 0 24 24">',
-        '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/>',
-      '</symbol>',
+    // portal_detail_display.js
+    '<symbol id="ic_place_24px" viewBox="0 0 24 24">',
+    '<path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/>',
+    '</symbol>',
     '</svg>'].join('\\n')).appendTo('body');
 }
 
@@ -124,38 +124,43 @@ function createDefaultBaseMapLayers() {
   // (not available over https though - not on the right domain name anyway)
   var cartoAttr = '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>';
   var cartoUrl = 'https://{s}.basemaps.cartocdn.com/{theme}/{z}/{x}/{y}.png';
-  baseLayers['CartoDB Dark Matter'] = L.tileLayer(cartoUrl,{attribution:cartoAttr,theme:'dark_all'});
-  baseLayers['CartoDB Positron'] = L.tileLayer(cartoUrl,{attribution:cartoAttr,theme:'light_all'});
+  baseLayers['CartoDB Dark Matter'] = L.tileLayer(cartoUrl, { attribution: cartoAttr, theme: 'dark_all' });
+  baseLayers['CartoDB Positron'] = L.tileLayer(cartoUrl, { attribution: cartoAttr, theme: 'light_all' });
 
 
   // Google Maps - including ingress default (using the stock-intel API-key)
   baseLayers['Google Default Ingress Map'] = L.gridLayer.googleMutant(
-    { type:'roadmap',
+    {
+      type: 'roadmap',
       maxZoom: 21,
       backgroundColor: '#0e3d4e',
       styles: [
-          { featureType:"all", elementType:"all",
-            stylers: [{visibility:"on"}, {hue:"#131c1c"}, {saturation:"-50"}, {invert_lightness:true}] },
-          { featureType:"water", elementType:"all",
-            stylers: [{visibility:"on"}, {hue:"#005eff"}, {invert_lightness:true}] },
-          { featureType:"poi", stylers:[{visibility:"off"}]},
-          { featureType:"transit", elementType:"all", stylers:[{visibility:"off"}] }
-        ],
+        {
+          featureType: "all", elementType: "all",
+          stylers: [{ visibility: "on" }, { hue: "#131c1c" }, { saturation: "-50" }, { invert_lightness: true }]
+        },
+        {
+          featureType: "water", elementType: "all",
+          stylers: [{ visibility: "on" }, { hue: "#005eff" }, { invert_lightness: true }]
+        },
+        { featureType: "poi", stylers: [{ visibility: "off" }] },
+        { featureType: "transit", elementType: "all", stylers: [{ visibility: "off" }] }
+      ],
     });
-  baseLayers['Google Roads'] = L.gridLayer.googleMutant({type:'roadmap', maxZoom: 21});
-  var trafficMutant = L.gridLayer.googleMutant({type:'roadmap', maxZoom: 21});
+  baseLayers['Google Roads'] = L.gridLayer.googleMutant({ type: 'roadmap', maxZoom: 21 });
+  var trafficMutant = L.gridLayer.googleMutant({ type: 'roadmap', maxZoom: 21 });
   trafficMutant.addGoogleLayer('TrafficLayer');
   baseLayers['Google Roads + Traffic'] = trafficMutant;
-  baseLayers['Google Satellite'] = L.gridLayer.googleMutant({type:'satellite', maxZoom: 21});
-  baseLayers['Google Hybrid'] = L.gridLayer.googleMutant({type:'hybrid', maxZoom: 21});
-  baseLayers['Google Terrain'] = L.gridLayer.googleMutant({type:'terrain', maxZoom: 21});
+  baseLayers['Google Satellite'] = L.gridLayer.googleMutant({ type: 'satellite', maxZoom: 21 });
+  baseLayers['Google Hybrid'] = L.gridLayer.googleMutant({ type: 'hybrid', maxZoom: 21 });
+  baseLayers['Google Terrain'] = L.gridLayer.googleMutant({ type: 'terrain', maxZoom: 21 });
 
 
   return baseLayers;
 }
 
 
-window.setupMap = function() {
+window.setupMap = function () {
   $('#map').text('');
 
 
@@ -163,11 +168,11 @@ window.setupMap = function() {
 
   // proper initial position is now delayed until all plugins are loaded and the base layer is set
   window.map = new L.Map('map', {
-    center: [0,0],
+    center: [0, 0],
     zoom: 1,
     zoomControl: (typeof android !== 'undefined' && android && android.showZoom) ? android.showZoom() : true,
     minZoom: MIN_ZOOM,
-//    zoomAnimation: false,
+    //    zoomAnimation: false,
     markerZoomAnimation: false,
     bounceAtZoomLimits: false,
     preferCanvas: 'PREFER_CANVAS' in window
@@ -178,15 +183,15 @@ window.setupMap = function() {
 
   L.Renderer.mergeOptions({
     padding: window.RENDERER_PADDING ||
-             L.Browser.mobile ? 0.5 : 1
+      L.Browser.mobile ? 0.5 : 1
   });
 
   // add empty div to leaflet control areas - to force other leaflet controls to move around IITC UI elements
   // TODO? move the actual IITC DOM into the leaflet control areas, so dummy <div>s aren't needed
-  if(!isSmartphone()) {
+  if (!isSmartphone()) {
     // chat window area
     $(window.map._controlCorners['bottomleft']).append(
-      $('<div>').width(708).height(108).addClass('leaflet-control').css({'pointer-events': 'none', 'margin': '0'}));
+      $('<div>').width(708).height(108).addClass('leaflet-control').css({ 'pointer-events': 'none', 'margin': '0' }));
   }
 
   var addLayers = {};
@@ -194,14 +199,14 @@ window.setupMap = function() {
 
   portalsFactionLayers = [];
   var portalsLayers = [];
-  for(var i = 0; i <= 8; i++) {
+  for (var i = 0; i <= 8; i++) {
     portalsFactionLayers[i] = [L.layerGroup(), L.layerGroup(), L.layerGroup()];
     portalsLayers[i] = L.layerGroup(portalsFactionLayers[i]);
     map.addLayer(portalsLayers[i]);
     var t = (i === 0 ? 'Unclaimed/Placeholder' : 'Level ' + i) + ' Portals';
     addLayers[t] = portalsLayers[i];
     // Store it in hiddenLayer to remove later
-    if(!isLayerGroupDisplayed(t, true)) hiddenLayer.push(portalsLayers[i]);
+    if (!isLayerGroupDisplayed(t, true)) hiddenLayer.push(portalsLayers[i]);
   }
 
   fieldsFactionLayers = [L.layerGroup(), L.layerGroup(), L.layerGroup()];
@@ -209,14 +214,14 @@ window.setupMap = function() {
   map.addLayer(fieldsLayer, true);
   addLayers['Fields'] = fieldsLayer;
   // Store it in hiddenLayer to remove later
-  if(!isLayerGroupDisplayed('Fields', true)) hiddenLayer.push(fieldsLayer);
+  if (!isLayerGroupDisplayed('Fields', true)) hiddenLayer.push(fieldsLayer);
 
   linksFactionLayers = [L.layerGroup(), L.layerGroup(), L.layerGroup()];
   var linksLayer = L.layerGroup(linksFactionLayers);
   map.addLayer(linksLayer, true);
   addLayers['Links'] = linksLayer;
   // Store it in hiddenLayer to remove later
-  if(!isLayerGroupDisplayed('Links', true)) hiddenLayer.push(linksLayer);
+  if (!isLayerGroupDisplayed('Links', true)) hiddenLayer.push(linksLayer);
 
   // faction-specific layers
   // these layers don't actually contain any data. instead, every time they're added/removed from the map,
@@ -224,21 +229,21 @@ window.setupMap = function() {
   // the below 'onoverlayadd/onoverlayremove' events
   var factionLayers = [L.layerGroup(), L.layerGroup(), L.layerGroup()];
   for (var fac in factionLayers) {
-    map.addLayer (factionLayers[fac]);
+    map.addLayer(factionLayers[fac]);
   }
 
-  var setFactionLayersState = function(fac,enabled) {
+  var setFactionLayersState = function (fac, enabled) {
     if (enabled) {
-      if (!fieldsLayer.hasLayer(fieldsFactionLayers[fac])) fieldsLayer.addLayer (fieldsFactionLayers[fac]);
-      if (!linksLayer.hasLayer(linksFactionLayers[fac])) linksLayer.addLayer (linksFactionLayers[fac]);
+      if (!fieldsLayer.hasLayer(fieldsFactionLayers[fac])) fieldsLayer.addLayer(fieldsFactionLayers[fac]);
+      if (!linksLayer.hasLayer(linksFactionLayers[fac])) linksLayer.addLayer(linksFactionLayers[fac]);
       for (var lvl in portalsLayers) {
-        if (!portalsLayers[lvl].hasLayer(portalsFactionLayers[lvl][fac])) portalsLayers[lvl].addLayer (portalsFactionLayers[lvl][fac]);
+        if (!portalsLayers[lvl].hasLayer(portalsFactionLayers[lvl][fac])) portalsLayers[lvl].addLayer(portalsFactionLayers[lvl][fac]);
       }
     } else {
-      if (fieldsLayer.hasLayer(fieldsFactionLayers[fac])) fieldsLayer.removeLayer (fieldsFactionLayers[fac]);
-      if (linksLayer.hasLayer(linksFactionLayers[fac])) linksLayer.removeLayer (linksFactionLayers[fac]);
+      if (fieldsLayer.hasLayer(fieldsFactionLayers[fac])) fieldsLayer.removeLayer(fieldsFactionLayers[fac]);
+      if (linksLayer.hasLayer(linksFactionLayers[fac])) linksLayer.removeLayer(linksFactionLayers[fac]);
       for (var lvl in portalsLayers) {
-        if (portalsLayers[lvl].hasLayer(portalsFactionLayers[lvl][fac])) portalsLayers[lvl].removeLayer (portalsFactionLayers[lvl][fac]);
+        if (portalsLayers[lvl].hasLayer(portalsFactionLayers[lvl][fac])) portalsLayers[lvl].removeLayer(portalsFactionLayers[lvl][fac]);
       }
     }
   }
@@ -251,22 +256,22 @@ window.setupMap = function() {
     addLayers['Enlightened'] = factionLayers[TEAM_ENL];
     addLayers['Resistance'] = factionLayers[TEAM_RES];
   }
-  if (!isLayerGroupDisplayed('Resistance', true)) hiddenLayer.push (factionLayers[TEAM_RES]);
-  if (!isLayerGroupDisplayed('Enlightened', true)) hiddenLayer.push (factionLayers[TEAM_ENL]);
+  if (!isLayerGroupDisplayed('Resistance', true)) hiddenLayer.push(factionLayers[TEAM_RES]);
+  if (!isLayerGroupDisplayed('Enlightened', true)) hiddenLayer.push(factionLayers[TEAM_ENL]);
 
-  setFactionLayersState (TEAM_NONE, true);
-  setFactionLayersState (TEAM_RES, isLayerGroupDisplayed('Resistance', true));
-  setFactionLayersState (TEAM_ENL, isLayerGroupDisplayed('Enlightened', true));
+  setFactionLayersState(TEAM_NONE, true);
+  setFactionLayersState(TEAM_RES, isLayerGroupDisplayed('Resistance', true));
+  setFactionLayersState(TEAM_ENL, isLayerGroupDisplayed('Enlightened', true));
 
   // NOTE: these events are fired by the layer chooser, so won't happen until that's created and added to the map
-  window.map.on('overlayadd overlayremove', function(e) {
+  window.map.on('overlayadd overlayremove', function (e) {
     var displayed = (e.type == 'overlayadd');
     switch (e.name) {
       case 'Resistance':
-        setFactionLayersState (TEAM_RES, displayed);
+        setFactionLayersState(TEAM_RES, displayed);
         break;
       case 'Enlightened':
-        setFactionLayersState (TEAM_ENL, displayed);
+        setFactionLayersState(TEAM_ENL, displayed);
         break;
     }
   });
@@ -275,18 +280,18 @@ window.setupMap = function() {
 
   window.layerChooser = new L.Control.Layers(baseLayers, addLayers);
 
-  // Remove the hidden layer after layerChooser built, to avoid messing up ordering of layers 
-  $.each(hiddenLayer, function(ind, layer){
+  // Remove the hidden layer after layerChooser built, to avoid messing up ordering of layers
+  $.each(hiddenLayer, function (ind, layer) {
     map.removeLayer(layer);
 
     // as users often become confused if they accidentally switch a standard layer off, display a warning in this case
     $('#portaldetails').html('<div class="layer_off_warning">'
-                            +'<p><b>Warning</b>: some of the standard layers are turned off. Some portals/links/fields will not be visible.</p>'
-                            +'<a id="enable_standard_layers">Enable standard layers</a>'
-                            +'</div>');
+      + '<p><b>Warning</b>: some of the standard layers are turned off. Some portals/links/fields will not be visible.</p>'
+      + '<a id="enable_standard_layers">Enable standard layers</a>'
+      + '</div>');
 
-    $('#enable_standard_layers').on('click', function() {
-      $.each(addLayers, function(ind, layer) {
+    $('#enable_standard_layers').on('click', function () {
+      $.each(addLayers, function (ind, layer) {
         if (!map.hasLayer(layer)) map.addLayer(layer);
       });
       $('#portaldetails').html('');
@@ -300,29 +305,28 @@ window.setupMap = function() {
   // listen for changes and store them in cookies
   map.on('moveend', window.storeMapPosition);
 
-  map.on('moveend', function(e) {
+  map.on('moveend', function (e) {
     // two limits on map position
     // we wrap longitude (the L.LatLng 'wrap' method) - so we don't find ourselves looking beyond +-180 degrees
     // then latitude is clamped with the clampLatLng function (to the 85 deg north/south limits)
     var newPos = clampLatLng(map.getCenter().wrap());
     if (!map.getCenter().equals(newPos)) {
-      map.panTo(newPos,{animate:false})
+      map.panTo(newPos, { animate: false })
     }
   });
 
   // map update status handling & update map hooks
   // ensures order of calls
-  map.on('movestart', function() { window.mapRunsUserAction = true; window.requests.abort(); window.startRefreshTimeout(-1); });
-  map.on('moveend', function() { window.mapRunsUserAction = false; window.startRefreshTimeout(ON_MOVE_REFRESH*1000); });
+  map.on('movestart', function () { window.mapRunsUserAction = true; window.requests.abort(); window.startRefreshTimeout(-1); });
+  map.on('moveend', function () { window.mapRunsUserAction = false; window.startRefreshTimeout(ON_MOVE_REFRESH * 1000); });
 
   // on zoomend, check to see the zoom level is an int, and reset the view if not
   // (there's a bug on mobile where zoom levels sometimes end up as fractional levels. this causes the base map to be invisible)
-  map.on('zoomend', function() {
+  map.on('zoomend', function () {
     var z = map.getZoom();
-    if (z != parseInt(z))
-    {
-      log.warn('Non-integer zoom level at zoomend: '+z+' - trying to fix...');
-      map.setZoom(parseInt(z), {animate:false});
+    if (z != parseInt(z)) {
+      log.warn('Non-integer zoom level at zoomend: ' + z + ' - trying to fix...');
+      map.setZoom(parseInt(z), { animate: false });
     }
   });
 
@@ -331,7 +335,7 @@ window.setupMap = function() {
   // possibly some cases when resizing desktop browser too
   map.on('moveend', idleReset);
 
-  window.addResumeFunction(function() { window.startRefreshTimeout(ON_MOVE_REFRESH*1000); });
+  window.addResumeFunction(function () { window.startRefreshTimeout(ON_MOVE_REFRESH * 1000); });
 
   // create the map data requester
   window.mapDataRequest = new MapDataRequest();
@@ -340,11 +344,11 @@ window.setupMap = function() {
   // start the refresh process with a small timeout, so the first data request happens quickly
   // (the code originally called the request function directly, and triggered a normal delay for the next refresh.
   //  however, the moveend/zoomend gets triggered on map load, causing a duplicate refresh. this helps prevent that
-  window.startRefreshTimeout(ON_MOVE_REFRESH*1000);
+  window.startRefreshTimeout(ON_MOVE_REFRESH * 1000);
 };
 
 //adds a base layer to the map. done separately from the above, so that plugins that add base layers can be the default
-window.setMapBaseLayer = function() {
+window.setMapBaseLayer = function () {
   //create a map name -> layer mapping - depends on internals of L.Control.Layers
   var nameToLayer = {};
   var firstLayer = null;
@@ -363,12 +367,12 @@ window.setMapBaseLayer = function() {
   // now we have a base layer we can set the map position
   // (setting an initial position, before a base layer is added, causes issues with leaflet)
   var pos = getPosition();
-  map.setView (pos.center, pos.zoom, {reset:true});
+  map.setView(pos.center, pos.zoom, { reset: true });
 
 
   //event to track layer changes and store the name
-  map.on('baselayerchange', function(info) {
-    for(i in window.layerChooser._layers) {
+  map.on('baselayerchange', function (info) {
+    for (i in window.layerChooser._layers) {
       var obj = window.layerChooser._layers[i];
       if (info.layer === obj.layer) {
         localStorage['iitc-base-map'] = obj.name;
@@ -388,93 +392,93 @@ window.setMapBaseLayer = function() {
 // renders player details into the website. Since the player info is
 // included as inline script in the original site, the data is static
 // and cannot be updated.
-window.setupPlayerStat = function() {
+window.setupPlayerStat = function () {
   // stock site updated to supply the actual player level, AP requirements and XM capacity values
   var level = PLAYER.verified_level;
   PLAYER.level = level; //for historical reasons IITC expects PLAYER.level to contain the current player level
 
   var n = window.PLAYER.nickname;
-  PLAYER.nickMatcher = new RegExp('\\b('+n+')\\b', 'ig');
+  PLAYER.nickMatcher = new RegExp('\\b(' + n + ')\\b', 'ig');
 
   var ap = parseInt(PLAYER.ap);
   var thisLvlAp = parseInt(PLAYER.min_ap_for_current_level);
   var nextLvlAp = parseInt(PLAYER.min_ap_for_next_level);
 
   if (nextLvlAp) {
-    var lvlUpAp = digits(nextLvlAp-ap);
-    var lvlApProg = Math.round((ap-thisLvlAp)/(nextLvlAp-thisLvlAp)*100);
+    var lvlUpAp = digits(nextLvlAp - ap);
+    var lvlApProg = Math.round((ap - thisLvlAp) / (nextLvlAp - thisLvlAp) * 100);
   } // else zero nextLvlAp - so at maximum level(?)
 
   var xmMax = parseInt(PLAYER.xm_capacity);
-  var xmRatio = Math.round(PLAYER.energy/xmMax*100);
+  var xmRatio = Math.round(PLAYER.energy / xmMax * 100);
 
   var cls = PLAYER.team === 'RESISTANCE' ? 'res' : 'enl';
 
 
   var t = 'Level:\t' + level + '\n'
-        + 'XM:\t' + PLAYER.energy + ' / ' + xmMax + '\n'
-        + 'AP:\t' + digits(ap) + '\n'
-        + (nextLvlAp > 0 ? 'level up in:\t' + lvlUpAp + ' AP' : 'Maximum level reached(!)')
-        + '\n\Invites:\t'+PLAYER.available_invites
-        + '\n\nNote: your player stats can only be updated by a full reload (F5)';
+    + 'XM:\t' + PLAYER.energy + ' / ' + xmMax + '\n'
+    + 'AP:\t' + digits(ap) + '\n'
+    + (nextLvlAp > 0 ? 'level up in:\t' + lvlUpAp + ' AP' : 'Maximum level reached(!)')
+    + '\n\Invites:\t' + PLAYER.available_invites
+    + '\n\nNote: your player stats can only be updated by a full reload (F5)';
 
   $('#playerstat').html(''
-    + '<h2 title="'+t+'">'+level+'&nbsp;'
+    + '<h2 title="' + t + '">' + level + '&nbsp;'
     + '<div id="name">'
-    + '<span class="'+cls+'">'+PLAYER.nickname+'</span>'
+    + '<span class="' + cls + '">' + PLAYER.nickname + '</span>'
     + '<a href="/_ah/logout?continue=https://www.google.com/accounts/Logout%3Fcontinue%3Dhttps://appengine.google.com/_ah/logout%253Fcontinue%253Dhttps://intel.ingress.com/intel%26service%3Dah" id="signout">sign out</a>'
     + '</div>'
     + '<div id="stats">'
-    + '<sup>XM: '+xmRatio+'%</sup>'
-    + '<sub>' + (nextLvlAp > 0 ? 'level: '+lvlApProg+'%' : 'max level') + '</sub>'
+    + '<sup>XM: ' + xmRatio + '%</sup>'
+    + '<sub>' + (nextLvlAp > 0 ? 'level: ' + lvlApProg + '%' : 'max level') + '</sub>'
     + '</div>'
     + '</h2>'
   );
 }
 
-window.setupSidebarToggle = function() {
-  $('#sidebartoggle').on('click', function() {
+window.setupSidebarToggle = function () {
+  $('#sidebartoggle').on('click', function () {
     var toggle = $('#sidebartoggle');
     var sidebar = $('#scrollwrapper');
-    if(sidebar.is(':visible')) {
+    if (sidebar.is(':visible')) {
       sidebar.hide().css('z-index', 1);
-      $('.leaflet-right').css('margin-right','0');
+      $('.leaflet-right').css('margin-right', '0');
       toggle.html('<span class="toggle open"></span>');
       toggle.css('right', '0');
     } else {
       sidebar.css('z-index', 1001).show();
       window.resetScrollOnNewPortal();
-      $('.leaflet-right').css('margin-right', SIDEBAR_WIDTH+1+'px');
+      $('.leaflet-right').css('margin-right', SIDEBAR_WIDTH + 1 + 'px');
       toggle.html('<span class="toggle close"></span>');
-      toggle.css('right', SIDEBAR_WIDTH+1+'px');
+      toggle.css('right', SIDEBAR_WIDTH + 1 + 'px');
     }
     $('.ui-tooltip').remove();
   });
 }
 
-window.setupTooltips = function(element) {
+window.setupTooltips = function (element) {
   element = element || $(document);
   element.tooltip({
     // disable show/hide animation
     show: { effect: 'none', duration: 0, delay: 350 },
     hide: false,
-    open: function(event, ui) {
+    open: function (event, ui) {
       // ensure all other tooltips are closed
       $(".ui-tooltip").not(ui.tooltip).remove();
     },
-    content: function() {
+    content: function () {
       var title = $(this).attr('title');
       return window.convertTextToTableMagic(title);
     }
   });
 
-  if(!window.tooltipClearerHasBeenSetup) {
+  if (!window.tooltipClearerHasBeenSetup) {
     window.tooltipClearerHasBeenSetup = true;
-    $(document).on('click', '.ui-tooltip', function() { $(this).remove(); });
+    $(document).on('click', '.ui-tooltip', function () { $(this).remove(); });
   }
 }
 
-window.setupLayerChooserApi = function() {
+window.setupLayerChooserApi = function () {
   // hide layer chooser if booted with the iitcm android app
   if (typeof android !== 'undefined' && android && android.setLayers) {
     $('.leaflet-control-layers').hide();
@@ -482,10 +486,10 @@ window.setupLayerChooserApi = function() {
 
   //hook some additional code into the LayerControl so it's easy for the mobile app to interface with it
   //WARNING: does depend on internals of the L.Control.Layers code
-  window.layerChooser.getLayers = function() {
+  window.layerChooser.getLayers = function () {
     var baseLayers = [];
     var overlayLayers = [];
-    this._layers.forEach(function (obj,idx) {
+    this._layers.forEach(function (obj, idx) {
       var layerActive = window.map.hasLayer(obj.layer);
       var info = {
         layerId: idx,
@@ -503,11 +507,11 @@ window.setupLayerChooserApi = function() {
     var baseLayersJSON = JSON.stringify(baseLayers);
 
     if (typeof android !== 'undefined' && android && android.setLayers) {
-        if(this.androidTimer) clearTimeout(this.androidTimer);
-        this.androidTimer = setTimeout(function() {
-            this.androidTimer = null;
-            android.setLayers(baseLayersJSON, overlayLayersJSON);
-        }, 1000);
+      if (this.androidTimer) clearTimeout(this.androidTimer);
+      this.androidTimer = setTimeout(function () {
+        this.androidTimer = null;
+        android.setLayers(baseLayersJSON, overlayLayersJSON);
+      }, 1000);
     }
 
     return {
@@ -516,19 +520,19 @@ window.setupLayerChooserApi = function() {
     }
   }
 
-  window.layerChooser.showLayer = function(id,show) {
+  window.layerChooser.showLayer = function (id, show) {
     if (show === undefined) show = true;
     obj = this._layers[id];
     if (!obj) return false;
 
-    if(show) {
+    if (show) {
       if (!this._map.hasLayer(obj.layer)) {
         //the layer to show is not currently active
         this._map.addLayer(obj.layer);
 
         //if it's a base layer, remove any others
         if (!obj.overlay) {
-          for(i in this._layers) {
+          for (i in this._layers) {
             if (i != id) {
               var other = this._layers[i];
               if (!other.overlay && this._map.hasLayer(other.layer)) this._map.removeLayer(other.layer);
@@ -543,16 +547,16 @@ window.setupLayerChooserApi = function() {
     }
 
     //below logic based on code in L.Control.Layers _onInputClick
-    if(!obj.overlay) {
+    if (!obj.overlay) {
       this._map.setZoom(this._map.getZoom());
-      this._map.fire('baselayerchange', {layer: obj.layer});
+      this._map.fire('baselayerchange', { layer: obj.layer });
     }
 
     return true;
   };
 
   var _update = window.layerChooser._update;
-  window.layerChooser._update = function() {
+  window.layerChooser._update = function () {
     // update layer menu in IITCm
     try {
       if (typeof android !== 'undefined')
@@ -573,7 +577,7 @@ window.setupLayerChooserApi = function() {
   }
 }
 
-window.extendLeaflet = function() {
+window.extendLeaflet = function () {
   L.Icon.Default.mergeOptions({
     iconUrl: '@@INCLUDEIMAGE:images/marker-ingress.png@@',
     iconRetinaUrl: '@@INCLUDEIMAGE:images/marker-ingress-2x.png@@',
@@ -582,13 +586,13 @@ window.extendLeaflet = function() {
   L.Icon.Default.imagePath = ' '; // in order to suppress _detectIconPath (it fails with data-urls)
 
   $(['<svg>',
-      // search.js, distance-to-portal.user.js, draw-tools.user.js
-      '<symbol id="marker-icon" viewBox="0 0 25 41">',
-        '<path d="M1.36241844765,18.67488124675 A12.5,12.5 0 1,1 23.63758155235,18.67488124675 L12.5,40.5336158073 Z" style="stroke:none;" />',
-        '<path d="M1.80792170975,18.44788599685 A12,12 0 1,1 23.19207829025,18.44788599685 L12.5,39.432271175 Z" style="stroke:#000000; stroke-width:1px; stroke-opacity: 0.15; fill: none;" />',
-        '<path d="M2.921679865,17.8803978722 A10.75,10.75 0 1,1 22.078320135,17.8803978722 L12.5,36.6789095943 Z" style="stroke:#ffffff; stroke-width:1.5px; stroke-opacity: 0.35; fill: none;" />',
-        '<path d="M19.86121593215,17.25 L12.5,21.5 L5.13878406785,17.25 L5.13878406785,8.75 L12.5,4.5 L19.86121593215,8.75 Z M7.7368602792,10.25 L17.2631397208,10.25 L12.5,18.5 Z M12.5,13 L7.7368602792,10.25 M12.5,13 L17.2631397208,10.25 M12.5,13 L12.5,18.5 M19.86121593215,17.25 L16.39711431705,15.25 M5.13878406785,17.25 L8.60288568295,15.25 M12.5,4.5 L12.5,8.5" style="stroke:#ffffff; stroke-width:1.25px; stroke-opacity: 1; fill: none;" />',
-      '</symbol>',
+    // search.js, distance-to-portal.user.js, draw-tools.user.js
+    '<symbol id="marker-icon" viewBox="0 0 25 41">',
+    '<path d="M1.36241844765,18.67488124675 A12.5,12.5 0 1,1 23.63758155235,18.67488124675 L12.5,40.5336158073 Z" style="stroke:none;" />',
+    '<path d="M1.80792170975,18.44788599685 A12,12 0 1,1 23.19207829025,18.44788599685 L12.5,39.432271175 Z" style="stroke:#000000; stroke-width:1px; stroke-opacity: 0.15; fill: none;" />',
+    '<path d="M2.921679865,17.8803978722 A10.75,10.75 0 1,1 22.078320135,17.8803978722 L12.5,36.6789095943 Z" style="stroke:#ffffff; stroke-width:1.5px; stroke-opacity: 0.35; fill: none;" />',
+    '<path d="M19.86121593215,17.25 L12.5,21.5 L5.13878406785,17.25 L5.13878406785,8.75 L12.5,4.5 L19.86121593215,8.75 Z M7.7368602792,10.25 L17.2631397208,10.25 L12.5,18.5 Z M12.5,13 L7.7368602792,10.25 M12.5,13 L17.2631397208,10.25 M12.5,13 L12.5,18.5 M19.86121593215,17.25 L16.39711431705,15.25 M5.13878406785,17.25 L8.60288568295,15.25 M12.5,4.5 L12.5,8.5" style="stroke:#ffffff; stroke-width:1.25px; stroke-opacity: 1; fill: none;" />',
+    '</symbol>',
     '</svg>'].join('\\n')).appendTo('body');
 
   L.DivIcon.ColoredSvg = L.DivIcon.extend({
@@ -596,8 +600,8 @@ window.extendLeaflet = function() {
       iconSize: [25, 41],
       iconAnchor: [12, 41],
       className: 'leaflet-div-icon-iitc-generic-marker',
-               // ^ actually any name, just to prevent default
-               // ^ (as it's inappropriately styled)
+      // ^ actually any name, just to prevent default
+      // ^ (as it's inappropriately styled)
       svgTemplate: '<svg style="fill: {color}"><use xlink:href="#marker-icon"/></svg>',
       color: '#a24ac3' // for draw-tools:
       // L.divIcon does not use the option `color`, but we store it here to
@@ -647,10 +651,10 @@ window.extendLeaflet = function() {
 
   // Fix Leaflet: handle touchcancel events in Draggable
   L.Draggable.prototype._onDownOrig = L.Draggable.prototype._onDown;
-  L.Draggable.prototype._onDown = function(e) {
+  L.Draggable.prototype._onDown = function (e) {
     L.Draggable.prototype._onDownOrig.apply(this, arguments);
 
-    if(e.type === "touchstart") {
+    if (e.type === "touchstart") {
       L.DomEvent.on(document, "touchcancel", this._onUp, this);
     }
   };
@@ -669,7 +673,7 @@ function prepPluginsToLoad() {
     boot: -100
   }
 
-  function getPriority (data) {
+  function getPriority(data) {
     var v = data && data.priority || 'normal';
     var prio = priorities[v] || v;
     if (typeof prio !== 'number') {
@@ -681,14 +685,14 @@ function prepPluginsToLoad() {
 
   // executes setup function of plugin
   // and collects info for About IITC
-  function safeSetup (setup) {
+  function safeSetup(setup) {
     if (!setup) {
       log.warn('plugin must provide setup function');
       return;
     }
     var info = setup.info;
     if (typeof info !== 'object' || typeof info.script !== 'object' || typeof info.script.name !== 'string') {
-      log.warn('plugin does not have proper wrapper:',setup);
+      log.warn('plugin does not have proper wrapper:', setup);
       info = { script: {} };
     }
 
@@ -703,7 +707,7 @@ function prepPluginsToLoad() {
   }
 
   if (window.bootPlugins) { // sort plugins by priority
-    bootPlugins.sort(function (a,b) {
+    bootPlugins.sort(function (a, b) {
       return getPriority(a) - getPriority(b);
     });
   } else {
@@ -724,7 +728,7 @@ function prepPluginsToLoad() {
 }
 
 function boot() {
-  if(!isSmartphone()) // TODO remove completely?
+  if (!isSmartphone()) // TODO remove completely?
     window.debug.console.overwriteNativeIfRequired();
 
   log.log('loading done, booting. Built: @@BUILDDATE@@');
@@ -761,7 +765,7 @@ function boot() {
   // read here ONCE, so the URL is only evaluated one time after the
   // necessary data has been loaded.
   urlPortalLL = getURLParam('pll');
-  if(urlPortalLL) {
+  if (urlPortalLL) {
     urlPortalLL = urlPortalLL.split(",");
     urlPortalLL = [parseFloat(urlPortalLL[0]) || 0.0, parseFloat(urlPortalLL[1]) || 0.0];
   }
@@ -794,7 +798,7 @@ Also, OMS only supports a global callback for all managed markers. Therefore, we
 for each marker.
 */
 
-window.setupOMS = function() {
+window.setupOMS = function () {
   window.oms = new OverlappingMarkerSpiderfier(map, {
     keepSpiderfied: true,
     legWeight: 3.5,
@@ -804,48 +808,48 @@ window.setupOMS = function() {
     }
   });
 
-  window.oms.addListener('click', function(marker) {
+  window.oms.addListener('click', function (marker) {
     map.closePopup();
-    marker.fireEvent('spiderfiedclick', {target: marker});
+    marker.fireEvent('spiderfiedclick', { target: marker });
   });
-  window.oms.addListener('spiderfy', function(markers) {
+  window.oms.addListener('spiderfy', function (markers) {
     map.closePopup();
   });
-  map._container.addEventListener("keypress", function(ev) {
-    if(ev.keyCode === 27) // Esc
+  map._container.addEventListener("keypress", function (ev) {
+    if (ev.keyCode === 27) // Esc
       window.oms.unspiderfy();
   }, false);
 }
 
-window.registerMarkerForOMS = function(marker) {
+window.registerMarkerForOMS = function (marker) {
   marker.on('add', function () {
     window.oms.addMarker(marker);
   });
   marker.on('remove', function () {
     window.oms.removeMarker(marker);
   });
-  if(marker._map) // marker has already been added
+  if (marker._map) // marker has already been added
     window.oms.addMarker(marker);
 }
 
 try {
-@@INCLUDERAW:external/autolink-min.js@@
+  @@INCLUDERAW: external / autolink - min.js@@
 
-window.L_NO_TOUCH = navigator.maxTouchPoints===0; // prevent mobile style on desktop https://github.com/IITC-CE/ingress-intel-total-conversion/pull/189
-@@INCLUDERAW:external/leaflet-src.js@@
-@@INCLUDERAW:external/L.Geodesic.js@@
-@@INCLUDERAW:external/Leaflet.GoogleMutant.js@@
-@@INCLUDERAW:external/oms.min.js@@
-L.CanvasIconLayer = (function (module) {
-  @@INCLUDERAW:external/rbush.min.js@@
-  @@INCLUDERAW:external/leaflet.canvas-markers.js@@
+  window.L_NO_TOUCH = navigator.maxTouchPoints === 0; // prevent mobile style on desktop https://github.com/IITC-CE/ingress-intel-total-conversion/pull/189
+  @@INCLUDERAW: external / leaflet - src.js@@
+@@INCLUDERAW: external / L.Geodesic.js@@
+@@INCLUDERAW: external / Leaflet.GoogleMutant.js@@
+@@INCLUDERAW: external / oms.min.js@@
+  L.CanvasIconLayer = (function (module) {
+    @@INCLUDERAW: external / rbush.min.js@@
+  @@INCLUDERAW: external / leaflet.canvas - markers.js@@
   return module;
-}({})).exports(L);
+  }({})).exports(L);
 
-@@INCLUDERAW:external/jquery-3.4.1.min.js@@
-@@INCLUDERAW:external/jquery-ui-1.12.1.min.js@@
-@@INCLUDERAW:external/taphold.js@@
-@@INCLUDERAW:external/jquery.qrcode.min.js@@
+  @@INCLUDERAW: external / jquery - 3.4.1.min.js@@
+@@INCLUDERAW: external / jquery - ui - 1.12.1.min.js@@
+@@INCLUDERAW: external / taphold.js@@
+@@INCLUDERAW: external / jquery.qrcode.min.js@@
 
 } catch (e) {
   log.error("External's js loading failed");

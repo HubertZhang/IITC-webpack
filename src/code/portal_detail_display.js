@@ -2,14 +2,14 @@
 // main code block that renders the portal details in the sidebar and
 // methods that highlight the portal in the map view.
 
-window.resetScrollOnNewPortal = function() {
+window.resetScrollOnNewPortal = function () {
   if (selectedPortal !== window.renderPortalDetails.lastVisible) {
     // another portal selected so scroll position become irrelevant to new portal details
     $("#sidebar").scrollTop(0); // NB: this works ONLY when #sidebar:visible
   }
 };
 
-window.renderPortalDetails = function(guid) {
+window.renderPortalDetails = function (guid) {
   selectPortal(window.portals[guid] ? guid : null);
   if ($('#sidebar').is(':visible')) {
     window.resetScrollOnNewPortal();
@@ -23,10 +23,10 @@ window.renderPortalDetails = function(guid) {
   // TODO? handle the case where we request data for a particular portal GUID, but it *isn't* in
   // window.portals....
 
-  if(!window.portals[guid]) {
+  if (!window.portals[guid]) {
     urlPortal = guid;
     $('#portaldetails').html('');
-    if(isSmartphone()) {
+    if (isSmartphone()) {
       $('.fullimg').remove();
       $('#mobileinfo').html('<div style="text-align: center"><b>tap here for info screen</b></div>');
     }
@@ -43,21 +43,21 @@ window.renderPortalDetails = function(guid) {
   }
 
 
-  var modDetails = details ? '<div class="mods">'+getModDetails(details)+'</div>' : '';
-  var miscDetails = details ? getPortalMiscDetails(guid,details) : '';
+  var modDetails = details ? '<div class="mods">' + getModDetails(details) + '</div>' : '';
+  var miscDetails = details ? getPortalMiscDetails(guid, details) : '';
   var resoDetails = details ? getResonatorDetails(details) : '';
 
-//TODO? other status details...
+  //TODO? other status details...
   var statusDetails = details ? '' : '<div id="portalStatus">Loading details...</div>';
- 
+
 
   var img = fixPortalImageUrl(details ? details.image : data.image);
   var title = (details && details.title) || (data && data.title) || 'null';
 
-  var lat = data.latE6/1E6;
-  var lng = data.lngE6/1E6;
+  var lat = data.latE6 / 1E6;
+  var lng = data.lngE6 / 1E6;
 
-  var imgTitle = title+'\n\nClick to show full image.';
+  var imgTitle = title + '\n\nClick to show full image.';
 
 
   // portal level. start with basic data - then extend with fractional info in tooltip if available
@@ -65,11 +65,11 @@ window.renderPortalDetails = function(guid) {
   var levelDetails = levelInt;
   if (details) {
     levelDetails = getPortalLevel(details);
-    if(levelDetails != 8) {
-      if(levelDetails==Math.ceil(levelDetails))
+    if (levelDetails != 8) {
+      if (levelDetails == Math.ceil(levelDetails))
         levelDetails += "\n8";
       else
-        levelDetails += "\n" + (Math.ceil(levelDetails) - levelDetails)*8;
+        levelDetails += "\n" + (Math.ceil(levelDetails) - levelDetails) * 8;
       levelDetails += " resonator level(s) needed for next portal level";
     } else {
       levelDetails += "\nfully upgraded";
@@ -80,32 +80,32 @@ window.renderPortalDetails = function(guid) {
 
   var linkDetails = [];
 
-  var posOnClick = 'window.showPortalPosLinks('+lat+','+lng+',\''+escapeJavascriptString(title)+'\')';
-  var permalinkUrl = window.makePermalink([lat,lng]);
+  var posOnClick = 'window.showPortalPosLinks(' + lat + ',' + lng + ',\'' + escapeJavascriptString(title) + '\')';
+  var permalinkUrl = window.makePermalink([lat, lng]);
 
   if (typeof android !== 'undefined' && android && android.intentPosLink) {
     // android devices. one share link option - and the android app provides an interface to share the URL,
     // share as a geo: intent (navigation via google maps), etc
 
-    var shareLink = $('<div>').html( $('<a>').attr({onclick:posOnClick}).text('Share portal') ).html();
-    linkDetails.push('<aside>'+shareLink+'</aside>');
+    var shareLink = $('<div>').html($('<a>').attr({ onclick: posOnClick }).text('Share portal')).html();
+    linkDetails.push('<aside>' + shareLink + '</aside>');
 
   } else {
     // non-android - a permalink for the portal
-    var permaHtml = $('<div>').html( $('<a>').attr({href:permalinkUrl, title:'Create a URL link to this portal'}).text('Portal link') ).html();
-    linkDetails.push ( '<aside>'+permaHtml+'</aside>' );
+    var permaHtml = $('<div>').html($('<a>').attr({ href: permalinkUrl, title: 'Create a URL link to this portal' }).text('Portal link')).html();
+    linkDetails.push('<aside>' + permaHtml + '</aside>');
 
     // and a map link popup dialog
-    var mapHtml = $('<div>').html( $('<a>').attr({onclick:posOnClick, title:'Link to alternative maps (Google, etc)'}).text('Map links') ).html();
-    linkDetails.push('<aside>'+mapHtml+'</aside>');
+    var mapHtml = $('<div>').html($('<a>').attr({ onclick: posOnClick, title: 'Link to alternative maps (Google, etc)' }).text('Map links')).html();
+    linkDetails.push('<aside>' + mapHtml + '</aside>');
 
   }
-  
+
   $('#portaldetails')
     .html('') //to ensure it's clear
     .attr('class', TEAM_TO_CSS[teamStringToId(data.team)])
     .append(
-      $('<h3>', { class:'title' })
+      $('<h3>', { class: 'title' })
         .text(title)
         .prepend(
           $('<svg><use xlink:href="#ic_place_24px"/><title>Click to move to portal</title></svg>')
@@ -113,8 +113,8 @@ window.renderPortalDetails = function(guid) {
               class: 'material-icons icon-button',
               style: 'float: left'
             })
-            .click(function() {
-              zoomToAndShowPortal(guid,[data.latE6/1E6,data.lngE6/1E6]);
+            .click(function () {
+              zoomToAndShowPortal(guid, [data.latE6 / 1E6, data.lngE6 / 1E6]);
               if (isSmartphone()) { show('map') };
             })),
 
@@ -138,7 +138,7 @@ window.renderPortalDetails = function(guid) {
         .append(
           $('<span>', { id: 'level', title: levelDetails })
             .text(levelInt),
-          $('<img>', { class: 'hide', src:img })
+          $('<img>', { class: 'hide', src: img })
         ),
 
       modDetails,
@@ -153,13 +153,13 @@ window.renderPortalDetails = function(guid) {
   // only run the hooks when we have a portalDetails object - most plugins rely on the extended data
   // TODO? another hook to call always, for any plugins that can work with less data?
   if (details) {
-    runHooks('portalDetailsUpdated', {guid: guid, portal: portal, portalDetails: details, portalData: data});
+    runHooks('portalDetailsUpdated', { guid: guid, portal: portal, portalDetails: details, portalData: data });
   }
 }
 
 
 
-window.getPortalMiscDetails = function(guid,d) {
+window.getPortalMiscDetails = function (guid, d) {
 
   var randDetails;
 
@@ -169,13 +169,13 @@ window.getPortalMiscDetails = function(guid,d) {
     var linkInfo = getPortalLinks(guid);
     var maxOutgoing = getMaxOutgoingLinks(d);
     var linkCount = linkInfo.in.length + linkInfo.out.length;
-    var links = {incoming: linkInfo.in.length, outgoing: linkInfo.out.length};
+    var links = { incoming: linkInfo.in.length, outgoing: linkInfo.out.length };
 
     var title = 'at most ' + maxOutgoing + ' outgoing links\n' +
-                links.outgoing + ' links out\n' +
-                links.incoming + ' links in\n' +
-                '(' + (links.outgoing+links.incoming) + ' total)'
-    var linksText = ['links', links.outgoing+' out / '+links.incoming+' in', title];
+      links.outgoing + ' links out\n' +
+      links.incoming + ' links in\n' +
+      '(' + (links.outgoing + links.incoming) + ' total)'
+    var linksText = ['links', links.outgoing + ' out / ' + links.incoming + ' in', title];
 
     var player = d.owner
       ? '<span class="nickname">' + d.owner + '</span>'
@@ -187,7 +187,7 @@ window.getPortalMiscDetails = function(guid,d) {
 
     var fieldsText = ['fields', fieldCount];
 
-    var apGainText = getAttackApGainText(d,fieldCount,linkCount);
+    var apGainText = getAttackApGainText(d, fieldCount, linkCount);
 
     var attackValues = getPortalAttackValues(d);
 
@@ -200,21 +200,21 @@ window.getPortalMiscDetails = function(guid,d) {
       // But this makes the info panel look rather empty for unclaimed portals
       playerText, getRangeText(d),
       linksText, fieldsText,
-      getMitigationText(d,linkCount), getEnergyText(d),
+      getMitigationText(d, linkCount), getEnergyText(d),
       // and these have some use, even for uncaptured portals
       apGainText, getHackDetailsText(d),
     ];
 
-    if(attackValues.attack_frequency != 0)
+    if (attackValues.attack_frequency != 0)
       randDetailsData.push([
         '<span title="attack frequency" class="text-overflow-ellipsis">attack frequency</span>',
-        '×'+attackValues.attack_frequency]);
-    if(attackValues.hit_bonus != 0)
-      randDetailsData.push(['hit bonus', attackValues.hit_bonus+'%']);
-    if(attackValues.force_amplifier != 0)
+        '×' + attackValues.attack_frequency]);
+    if (attackValues.hit_bonus != 0)
+      randDetailsData.push(['hit bonus', attackValues.hit_bonus + '%']);
+    if (attackValues.force_amplifier != 0)
       randDetailsData.push([
         '<span title="force amplifier" class="text-overflow-ellipsis">force amplifier</span>',
-        '×'+attackValues.force_amplifier]);
+        '×' + attackValues.force_amplifier]);
 
     randDetails = '<table id="randdetails">' + genFourColumnTable(randDetailsData) + '</table>';
 
@@ -224,13 +224,13 @@ window.getPortalMiscDetails = function(guid,d) {
 
     if (d.artifactBrief && d.artifactBrief.target && Object.keys(d.artifactBrief.target).length > 0) {
       var targets = Object.keys(d.artifactBrief.target);
-//currently (2015-07-10) we no longer know the team each target portal is for - so we'll just show the artifact type(s) 
-       randDetails += '<div id="artifact_target">Target portal: '+targets.map(function(x) { return x.capitalize(); }).join(', ')+'</div>';
+      //currently (2015-07-10) we no longer know the team each target portal is for - so we'll just show the artifact type(s)
+      randDetails += '<div id="artifact_target">Target portal: ' + targets.map(function (x) { return x.capitalize(); }).join(', ') + '</div>';
     }
 
     // shards - taken directly from the portal details
     if (d.artifactDetail) {
-      randDetails += '<div id="artifact_fragments">Shards: '+d.artifactDetail.displayName+' #'+d.artifactDetail.fragments.join(', ')+'</div>';
+      randDetails += '<div id="artifact_fragments">Shards: ' + d.artifactDetail.displayName + ' #' + d.artifactDetail.fragments.join(', ') + '</div>';
     }
 
   }
@@ -241,16 +241,16 @@ window.getPortalMiscDetails = function(guid,d) {
 
 // draws link-range and hack-range circles around the portal with the
 // given details. Clear them if parameter 'd' is null.
-window.setPortalIndicators = function(p) {
+window.setPortalIndicators = function (p) {
 
-  if(portalRangeIndicator) map.removeLayer(portalRangeIndicator);
+  if (portalRangeIndicator) map.removeLayer(portalRangeIndicator);
   portalRangeIndicator = null;
-  if(portalAccessIndicator) map.removeLayer(portalAccessIndicator);
+  if (portalAccessIndicator) map.removeLayer(portalAccessIndicator);
   portalAccessIndicator = null;
 
   // if we have a portal...
 
-  if(p) {
+  if (p) {
     var coord = p.getLatLng();
 
     // range is only known for sure if we have portal details
@@ -260,14 +260,15 @@ window.setPortalIndicators = function(p) {
     if (d) {
       var range = getPortalRange(d);
       portalRangeIndicator = (range.range > 0
-          ? L.geodesicCircle(coord, range.range, {
-              fill: false,
-              color: RANGE_INDICATOR_COLOR,
-              weight: 3,
-              dashArray: range.isLinkable ? undefined : "10,10",
-              interactive: false })
-          : L.circle(coord, range.range, { fill: false, stroke: false, interactive: false })
-        ).addTo(map);
+        ? L.geodesicCircle(coord, range.range, {
+          fill: false,
+          color: RANGE_INDICATOR_COLOR,
+          weight: 3,
+          dashArray: range.isLinkable ? undefined : "10,10",
+          interactive: false
+        })
+        : L.circle(coord, range.range, { fill: false, stroke: false, interactive: false })
+      ).addTo(map);
     }
 
     portalAccessIndicator = L.circle(coord, HACK_RANGE,
@@ -281,7 +282,7 @@ window.setPortalIndicators = function(p) {
 // on old selection. Returns false if the selected portal changed.
 // Returns true if it's still the same portal that just needs an
 // update.
-window.selectPortal = function(guid) {
+window.selectPortal = function (guid) {
   var update = selectedPortal === guid;
   var oldPortalGuid = selectedPortal;
   selectedPortal = guid;
@@ -290,10 +291,10 @@ window.selectPortal = function(guid) {
   var newPortal = portals[guid];
 
   // Restore style of unselected portal
-  if(!update && oldPortal) setMarkerStyle(oldPortal,false);
+  if (!update && oldPortal) setMarkerStyle(oldPortal, false);
 
   // Change style of selected portal
-  if(newPortal) {
+  if (newPortal) {
     setMarkerStyle(newPortal, true);
 
     if (map.hasLayer(newPortal)) {
@@ -303,6 +304,6 @@ window.selectPortal = function(guid) {
 
   setPortalIndicators(newPortal);
 
-  runHooks('portalSelected', {selectedPortalGuid: guid, unselectedPortalGuid: oldPortalGuid});
+  runHooks('portalSelected', { selectedPortalGuid: guid, unselectedPortalGuid: oldPortalGuid });
   return update;
 }

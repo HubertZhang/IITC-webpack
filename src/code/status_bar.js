@@ -4,7 +4,7 @@
 // to website. Updates info in layer chooser.
 window.renderUpdateStatusTimer_ = undefined;
 
-window.renderUpdateStatus = function() {
+window.renderUpdateStatus = function () {
   var progress = 1;
 
   var tileParams = window.getCurrentZoomTileParameters();
@@ -13,23 +13,23 @@ window.renderUpdateStatus = function() {
 
   if (tileParams.hasPortals) {
     // zoom level includes portals (and also all links/fields)
-    if(!window.isSmartphone()) // space is valuable
+    if (!window.isSmartphone()) // space is valuable
       t += '<b>portals</b>: ';
-    if(tileParams.level === 0)
+    if (tileParams.level === 0)
       t += '<span id="loadlevel">all</span>';
     else
-      t += '<span id="loadlevel" style="background:'+COLORS_LVL[tileParams.level]+'">L'+tileParams.level+(tileParams.level<8?'+':'') + '</span>';
+      t += '<span id="loadlevel" style="background:' + COLORS_LVL[tileParams.level] + '">L' + tileParams.level + (tileParams.level < 8 ? '+' : '') + '</span>';
   } else {
-    if(!window.isSmartphone()) // space is valuable
+    if (!window.isSmartphone()) // space is valuable
       t += '<b>links</b>: ';
 
     if (tileParams.minLinkLength > 0)
-      t += '<span id="loadlevel">&gt;'+(tileParams.minLinkLength>1000?tileParams.minLinkLength/1000+'km':tileParams.minLinkLength+'m')+'</span>';
+      t += '<span id="loadlevel">&gt;' + (tileParams.minLinkLength > 1000 ? tileParams.minLinkLength / 1000 + 'km' : tileParams.minLinkLength + 'm') + '</span>';
     else
       t += '<span id="loadlevel">all links</span>';
   }
 
-  t +='</span>';
+  t += '</span>';
 
 
   // map status display
@@ -42,13 +42,13 @@ window.renderUpdateStatus = function() {
     // status.long - longer description, for tooltip (optional)
     // status.progress - fractional progress (from 0 to 1; -1 for indeterminate) of current state (optional)
     if (status.long)
-      t += '<span class="help" title="'+status.long+'">'+status.short+'</span>';
+      t += '<span class="help" title="' + status.long + '">' + status.short + '</span>';
     else
-      t += '<span>'+status.short+'</span>';
+      t += '<span>' + status.short + '</span>';
 
     if (status.progress !== undefined) {
-      if(status.progress !== -1)
-        t += ' '+Math.floor(status.progress*100)+'%';
+      if (status.progress !== -1)
+        t += ' ' + Math.floor(status.progress * 100) + '%';
       progress = status.progress;
     }
   } else {
@@ -71,14 +71,14 @@ window.renderUpdateStatus = function() {
 
   if (window.renderUpdateStatusTimer_) clearTimeout(window.renderUpdateStatusTimer_);
 
-  window.renderUpdateStatusTimer_ = setTimeout ( function() {
+  window.renderUpdateStatusTimer_ = setTimeout(function () {
     window.renderUpdateStatusTimer_ = undefined;
 
     $('#innerstatus').html(t);
     //$('#updatestatus').click(function() { startRefreshTimeout(10); });
     //. <a style="cursor: pointer" onclick="startRefreshTimeout(10)" title="Refresh">⟳</a>';
 
-    if(progress == 1 && window.activeRequests.length > 0) {
+    if (progress == 1 && window.activeRequests.length > 0) {
       // we don't know the exact progress, but we have requests (e.g. chat) running, so show it as indeterminate.
       progress = -1;
     }

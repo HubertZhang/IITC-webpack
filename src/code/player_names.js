@@ -4,7 +4,7 @@
 
 // test to see if a specific player GUID is a special system account (e.g. __JARVIS__, __ADA__) that shouldn't
 // be listed as a player
-window.isSystemPlayer = function(name) {
+window.isSystemPlayer = function (name) {
 
   switch (name) {
     case '__ADA__':

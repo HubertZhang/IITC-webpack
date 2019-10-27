@@ -3,11 +3,11 @@
 // stock intel site does internally too (the array format is only on the network)
 
 
-window.decodeArray = function(){};
+window.decodeArray = function () { };
 
 
 function parseMod(arr) {
-  if(arr == null) { return null; }
+  if (arr == null) { return null; }
   return {
     owner: arr[0],
     name: arr[1],
@@ -16,7 +16,7 @@ function parseMod(arr) {
   };
 }
 function parseResonator(arr) {
-  if(arr == null) { return null; }
+  if (arr == null) { return null; }
   return {
     owner: arr[0],
     level: arr[1],
@@ -35,7 +35,7 @@ function parseArtifactBrief(arr) {
 
   function decodeArtifactArray(arr) {
     var result = {};
-    for (var i=0; i<arr.length; i++) {
+    for (var i = 0; i < arr.length; i++) {
       // we'll use the type as the key - and store any additional array values as the value
       // that will be an empty array for now, so only object keys are useful data
       result[arr[i][0]] = arr[i].slice(1);
@@ -67,32 +67,32 @@ var CORE_PORTA_DATA_LENGTH = 4;
 function corePortalData(a) {
   return {
     // a[0] == type (always 'p')
-    team:          a[1],
-    latE6:         a[2],
-    lngE6:         a[3]
+    team: a[1],
+    latE6: a[2],
+    lngE6: a[3]
   }
 };
 
 var SUMMARY_PORTAL_DATA_LENGTH = 14;
 function summaryPortalData(a) {
   return {
-    level:         a[4],
-    health:        a[5],
-    resCount:      a[6],
-    image:         a[7],
-    title:         a[8],
-    ornaments:     a[9],
-    mission:       a[10],
+    level: a[4],
+    health: a[5],
+    resCount: a[6],
+    image: a[7],
+    title: a[8],
+    ornaments: a[9],
+    mission: a[10],
     mission50plus: a[11],
     artifactBrief: parseArtifactBrief(a[12]),
-    timestamp:     a[13]
+    timestamp: a[13]
   };
 };
 
-var DETAILED_PORTAL_DATA_LENGTH = SUMMARY_PORTAL_DATA_LENGTH+4;
+var DETAILED_PORTAL_DATA_LENGTH = SUMMARY_PORTAL_DATA_LENGTH + 4;
 
 
-window.decodeArray.portalSummary = function(a) {
+window.decodeArray.portalSummary = function (a) {
   if (!a) return undefined;
 
   if (a[0] !== 'p') {
@@ -113,7 +113,7 @@ window.decodeArray.portalSummary = function(a) {
   return $.extend(corePortalData(a), summaryPortalData(a));
 }
 
-window.decodeArray.portalDetail = function(a) {
+window.decodeArray.portalDetail = function (a) {
   if (!a) return undefined;
 
   if (a[0] !== 'p') {
@@ -131,11 +131,11 @@ window.decodeArray.portalDetail = function(a) {
   // the portal details array is just an extension of the portal summary array
   // to allow for niantic adding new items into the array before the extended details start,
   // use the length of the summary array
-  return $.extend(corePortalData(a), summaryPortalData(a),{
-    mods:      a[SUMMARY_PORTAL_DATA_LENGTH+0].map(parseMod),
-    resonators:a[SUMMARY_PORTAL_DATA_LENGTH+1].map(parseResonator),
-    owner:     a[SUMMARY_PORTAL_DATA_LENGTH+2],
-    artifactDetail:  parseArtifactDetail(a[SUMMARY_PORTAL_DATA_LENGTH+3]),
+  return $.extend(corePortalData(a), summaryPortalData(a), {
+    mods: a[SUMMARY_PORTAL_DATA_LENGTH + 0].map(parseMod),
+    resonators: a[SUMMARY_PORTAL_DATA_LENGTH + 1].map(parseResonator),
+    owner: a[SUMMARY_PORTAL_DATA_LENGTH + 2],
+    artifactDetail: parseArtifactDetail(a[SUMMARY_PORTAL_DATA_LENGTH + 3]),
   });
-  
+
 }

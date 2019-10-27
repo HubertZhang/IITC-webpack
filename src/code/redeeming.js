@@ -2,18 +2,18 @@
 ////////////////////////////////////////////////////////////////////
 
 window.REDEEM_SHORT_NAMES = {
-  'portal shield':'S',
-  'force amp':'FA',
-  'link amp':'LA',
-  'heatsink':'H',
-  'multihack':'M',
-  'turret':'T',
-  'unusual object':'U',
-  'resonator':'R',
-  'xmp burster':'X',
-  'power cube':'C',
-  'media':'M',
-  'ultra strike':'US',
+  'portal shield': 'S',
+  'force amp': 'FA',
+  'link amp': 'LA',
+  'heatsink': 'H',
+  'multihack': 'M',
+  'turret': 'T',
+  'unusual object': 'U',
+  'resonator': 'R',
+  'xmp burster': 'X',
+  'power cube': 'C',
+  'media': 'M',
+  'ultra strike': 'US',
 }
 
 /* These are HTTP status codes returned by the redemption API.
@@ -24,19 +24,19 @@ window.REDEEM_STATUSES = {
   500: 'Internal server error'
 };
 
-window.handleRedeemResponse = function(data, textStatus, jqXHR) {
+window.handleRedeemResponse = function (data, textStatus, jqXHR) {
   var passcode = jqXHR.passcode;
 
-  if(data.error) {
-    log.error('Error redeeming passcode "'+passcode+'": ' + data.error)
+  if (data.error) {
+    log.error('Error redeeming passcode "' + passcode + '": ' + data.error)
     dialog({
       title: 'Error: ' + passcode,
       html: '<strong>' + data.error + '</strong>'
     });
     return;
   }
-  if(!data.rewards) {
-    log.error('Error redeeming passcode "'+passcode+'": ', data)
+  if (!data.rewards) {
+    log.error('Error redeeming passcode "' + passcode + '": ', data)
     dialog({
       title: 'Error: ' + passcode,
       html: '<strong>An unexpected error occured</strong>'
@@ -44,7 +44,7 @@ window.handleRedeemResponse = function(data, textStatus, jqXHR) {
     return;
   }
 
-  if(data.playerData) {
+  if (data.playerData) {
     window.PLAYER = data.playerData;
     window.setupPlayerStat();
   }
@@ -52,22 +52,22 @@ window.handleRedeemResponse = function(data, textStatus, jqXHR) {
   var format = "long";
   try {
     format = localStorage["iitc-passcode-format"];
-  } catch(e) {}
+  } catch (e) { }
 
   var formatHandlers = {
     "short": formatPasscodeShort,
     "long": formatPasscodeLong
   }
-  if(!formatHandlers[format])
+  if (!formatHandlers[format])
     format = "long";
 
   var html = formatHandlers[format](data.rewards);
 
   var buttons = {};
-  Object.keys(formatHandlers).forEach(function(label) {
-    if(label == format) return;
+  Object.keys(formatHandlers).forEach(function (label) {
+    if (label == format) return;
 
-    buttons[label.toUpperCase()] = function() {
+    buttons[label.toUpperCase()] = function () {
       $(this).dialog("close");
       localStorage["iitc-passcode-format"] = label;
       handleRedeemResponse(data, textStatus, jqXHR);
@@ -82,27 +82,27 @@ window.handleRedeemResponse = function(data, textStatus, jqXHR) {
   });
 };
 
-window.formatPasscodeLong = function(data) {
+window.formatPasscodeLong = function (data) {
   var html = '<p><strong>Passcode confirmed. Acquired items:</strong></p><ul class="redeemReward">';
 
-  if(data.other) {
-    data.other.forEach(function(item) {
+  if (data.other) {
+    data.other.forEach(function (item) {
       html += '<li>' + window.escapeHtmlSpecialChars(item) + '</li>';
     });
   }
 
-  if(0 < data.xm)
+  if (0 < data.xm)
     html += '<li>' + window.escapeHtmlSpecialChars(data.xm) + ' XM</li>';
-  if(0 < data.ap)
+  if (0 < data.ap)
     html += '<li>' + window.escapeHtmlSpecialChars(data.ap) + ' AP</li>';
 
-  if(data.inventory) {
-    data.inventory.forEach(function(type) {
-      type.awards.forEach(function(item) {
+  if (data.inventory) {
+    data.inventory.forEach(function (type) {
+      type.awards.forEach(function (item) {
         html += '<li>' + item.count + 'x ';
 
         var l = item.level;
-        if(0 < l) {
+        if (0 < l) {
           l = parseInt(l);
           html += '<span class="itemlevel" style="color:' + COLORS_LVL[l] + '">L' + l + '</span> ';
         }
@@ -116,31 +116,31 @@ window.formatPasscodeLong = function(data) {
   return html;
 }
 
-window.formatPasscodeShort = function(data) {
+window.formatPasscodeShort = function (data) {
 
-  if(data.other) {
+  if (data.other) {
     var awards = data.other.map(window.escapeHtmlSpecialChars);
   } else {
     var awards = [];
   }
 
-  if(0 < data.xm)
+  if (0 < data.xm)
     awards.push(window.escapeHtmlSpecialChars(data.xm) + ' XM');
-  if(0 < data.ap)
+  if (0 < data.ap)
     awards.push(window.escapeHtmlSpecialChars(data.ap) + ' AP');
 
-  if(data.inventory) {
-    data.inventory.forEach(function(type) {
-      type.awards.forEach(function(item) {
+  if (data.inventory) {
+    data.inventory.forEach(function (type) {
+      type.awards.forEach(function (item) {
         var str = "";
-        if(item.count > 1)
+        if (item.count > 1)
           str += item.count + "&nbsp;";
 
-        if(window.REDEEM_SHORT_NAMES[type.name.toLowerCase()]) {
+        if (window.REDEEM_SHORT_NAMES[type.name.toLowerCase()]) {
           var shortName = window.REDEEM_SHORT_NAMES[type.name.toLowerCase()];
 
           var l = item.level;
-          if(0 < l) {
+          if (0 < l) {
             l = parseInt(l);
             str += '<span class="itemlevel" style="color:' + COLORS_LVL[l] + '">' + shortName + l + '</span>';
           } else {
@@ -148,7 +148,7 @@ window.formatPasscodeShort = function(data) {
           }
         } else { // no short name known
           var l = item.level;
-          if(0 < l) {
+          if (0 < l) {
             l = parseInt(l);
             str += '<span class="itemlevel" style="color:' + COLORS_LVL[l] + '">L' + l + '</span> ';
           }
@@ -163,17 +163,17 @@ window.formatPasscodeShort = function(data) {
   return '<p class="redeemReward">' + awards.join(', ') + '</p>'
 }
 
-window.setupRedeem = function() {
-  $("#redeem").keypress(function(e) {
-    if((e.keyCode ? e.keyCode : e.which) !== 13) return;
+window.setupRedeem = function () {
+  $("#redeem").keypress(function (e) {
+    if ((e.keyCode ? e.keyCode : e.which) !== 13) return;
 
     var passcode = $(this).val();
     passcode = passcode.replace(/[^\x20-\x7E]+/g, ''); //removes non-printable characters
-    if(!passcode) return;
+    if (!passcode) return;
 
-    var jqXHR = window.postAjax('redeemReward', {passcode:passcode}, window.handleRedeemResponse, function(response) {
+    var jqXHR = window.postAjax('redeemReward', { passcode: passcode }, window.handleRedeemResponse, function (response) {
       var extra = '';
-      if(response.status) {
+      if (response.status) {
         extra = (window.REDEEM_STATUSES[response.status] || 'The server indicated an error.') + ' (HTTP ' + response.status + ')';
       } else {
         extra = 'No status code was returned.';

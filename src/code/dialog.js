@@ -48,7 +48,7 @@ window.DIALOG_SLIDE_DURATION = 100;
  * applied a class to your dialog after creating it with alert(), dialogClass may be particularly
  * useful.
  */
-window.dialog = function(options) {
+window.dialog = function (options) {
   // Override for smartphones. Preserve default behavior and create a modal dialog.
   options = options || {};
 
@@ -63,9 +63,9 @@ window.dialog = function(options) {
   }
 
   // Convert text to HTML if necessary
-  if(options.text) {
+  if (options.text) {
     html = window.convertTextToTableMagic(options.text);
-  } else if(options.html) {
+  } else if (options.html) {
     html = options.html;
   } else {
     log.error('window.dialog: warning: no text in dialog');
@@ -73,13 +73,13 @@ window.dialog = function(options) {
   }
 
   // Modal dialogs should not be draggable
-  if(options.modal) {
+  if (options.modal) {
     options.dialogClass = (options.dialogClass ? options.dialogClass + ' ' : '') + 'ui-dialog-modal';
     options.draggable = false;
   }
 
   // Close out existing dialogs.
-  if(window.DIALOGS[id]) {
+  if (window.DIALOGS[id]) {
     try {
       var selector = $(window.DIALOGS[id]);
       selector.dialog('close');
@@ -91,7 +91,7 @@ window.dialog = function(options) {
 
   // there seems to be a bug where width/height are set to a fixed value after moving a dialog
   function sizeFix() {
-    if(dialog.data('collapsed')) return;
+    if (dialog.data('collapsed')) return;
 
     var options = dialog.dialog('option');
     dialog.dialog('option', 'height', options.height);
@@ -107,11 +107,11 @@ window.dialog = function(options) {
     closeText: '',
     title: '',
     buttons: {
-      'OK': function() {
+      'OK': function () {
         $(this).dialog('close');
       }
     },
-    open: function() {
+    open: function () {
       var titlebar = $(this).closest('.ui-dialog').find('.ui-dialog-titlebar');
       titlebar.find('.ui-dialog-title').addClass('ui-dialog-title-active');
       var close = titlebar.find('.ui-dialog-titlebar-close');
@@ -119,20 +119,20 @@ window.dialog = function(options) {
       // Title should not show up on mouseover
       close.removeAttr('title').addClass('ui-dialog-titlebar-button');
 
-      if(!$(this).dialog('option', 'modal')) {
+      if (!$(this).dialog('option', 'modal')) {
         // Start out with a cloned version of the close button
         var collapse = close.clone();
 
         // Change it into a collapse button and set the click handler
         collapse.addClass('ui-dialog-titlebar-button-collapse ui-dialog-titlebar-button-collapse-expanded');
-        collapse.click($.proxy(function() {
+        collapse.click($.proxy(function () {
           var collapsed = ($(this).data('collapsed') === true);
 
           // Run callbacks if we have them
-          if($(this).data('collapseExpandCallback')) {
+          if ($(this).data('collapseExpandCallback')) {
             $.proxy($(this).data('collapseExpandCallback'), this)(!collapsed);
           } else {
-            if(!collapsed && $(this).data('collapseCallback')) {
+            if (!collapsed && $(this).data('collapseCallback')) {
               $.proxy($(this).data('collapseCallback'), this)();
             } else if (collapsed && $(this).data('expandCallback')) {
               $.proxy($(this).data('expandCallback'), this)();
@@ -140,15 +140,15 @@ window.dialog = function(options) {
           }
 
           // Find the button pane and content dialog in this ui-dialog, and add or remove the 'hidden' class.
-          var dialog   = $(this).closest('.ui-dialog');
+          var dialog = $(this).closest('.ui-dialog');
           var selector = dialog.find('.ui-dialog-content,.ui-dialog-buttonpane');
-          var button   = dialog.find('.ui-dialog-titlebar-button-collapse');
+          var button = dialog.find('.ui-dialog-titlebar-button-collapse');
 
           // Slide toggle
           $(this).css('height', '');
-          $(selector).slideToggle({duration: window.DIALOG_SLIDE_DURATION, complete: sizeFix});
+          $(selector).slideToggle({ duration: window.DIALOG_SLIDE_DURATION, complete: sizeFix });
 
-          if(collapsed) {
+          if (collapsed) {
             $(button).removeClass('ui-dialog-titlebar-button-collapse-collapsed');
             $(button).addClass('ui-dialog-titlebar-button-collapse-expanded');
           } else {
@@ -170,14 +170,14 @@ window.dialog = function(options) {
 
       log.log('window.dialog: ' + $(this).data('id') + ' (' + $(this).dialog('option', 'title') + ') opened. ' + window.DIALOG_COUNT + ' remain.');
     },
-    close: function() {
+    close: function () {
       // Run the close callback if we have one
-      if($(this).data('closeCallback')) {
+      if ($(this).data('closeCallback')) {
         $.proxy($(this).data('closeCallback'), this)();
       }
 
       // Make sure that we don't keep a dead dialog in focus
-      if(window.DIALOG_FOCUS && $(window.DIALOG_FOCUS).data('id') === $(this).data('id')) {
+      if (window.DIALOG_FOCUS && $(window.DIALOG_FOCUS).data('id') === $(this).data('id')) {
         window.DIALOG_FOCUS = null;
       }
 
@@ -194,15 +194,15 @@ window.dialog = function(options) {
       // remove from DOM and destroy
       $(this).dialog('destroy').remove();
     },
-    focus: function() {
-      if($(this).data('focusCallback')) {
+    focus: function () {
+      if ($(this).data('focusCallback')) {
         $.proxy($(this).data('focusCallback'), this)();
       }
 
       // Blur the window currently in focus unless we're gaining focus
-      if(window.DIALOG_FOCUS && $(window.DIALOG_FOCUS).data('id') !== $(this).data('id')) {
-        $.proxy(function(event, ui) {
-          if($(this).data('blurCallback')) {
+      if (window.DIALOG_FOCUS && $(window.DIALOG_FOCUS).data('id') !== $(this).data('id')) {
+        $.proxy(function (event, ui) {
+          if ($(this).data('blurCallback')) {
             $.proxy($(this).data('blurCallback'), this)();
           }
 
@@ -235,7 +235,7 @@ window.dialog = function(options) {
   dialog.data('focusCallback', options.focusCallback);
   dialog.data('blurCallback', options.blurCallback);
 
-  if(options.modal) {
+  if (options.modal) {
     // ui-modal includes overrides for modal dialogs
     dialog.parent().addClass('ui-modal');
   } else {
@@ -252,9 +252,9 @@ window.dialog = function(options) {
 /* Creates an alert dialog with default settings.
  * If you want more configurability, use window.dialog instead.
  */
-window.alert = function(text, isHTML, closeCallback) {
-  var obj = {closeCallback: closeCallback};
-  if(isHTML) {
+window.alert = function (text, isHTML, closeCallback) {
+  var obj = { closeCallback: closeCallback };
+  if (isHTML) {
     obj.html = text;
   } else {
     obj.text = text;
@@ -263,9 +263,9 @@ window.alert = function(text, isHTML, closeCallback) {
   return dialog(obj);
 }
 
-window.setupDialogs = function() {
+window.setupDialogs = function () {
   window.DIALOG_ID = 0;
-  window.DIALOGS   = {}
+  window.DIALOGS = {}
   window.DIALOG_COUNT = 0;
   window.DIALOG_FOCUS = null;
 }
