@@ -1,0 +1,25 @@
+{
+    "editor.rulers": [
+        120
+    ],
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+        "source.fixAll.tslint": true
+    },
+    "files.associations": {
+        "tslint.json": "jsonc",
+        ".vscode/settings.json": "jsonc",
+        ".vscode/extensions.json": "jsonc",
+    },
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "[typescript]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "vscode.typescript-language-features"
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "vscode.json-language-features"
+    },
+}

@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        "EditorConfig.EditorConfig",
+        "esbenp.prettier-vscode",
+        "mrmlnc.vscode-postcss-sorting",
+        "ms-vscode.vscode-typescript-tslint-plugin",
+    ]
+}
