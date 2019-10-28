@@ -14,6 +14,7 @@
 // - Frackers ('peFRACK')
 // (there are 7 different colors for each of them)
 
+var _portals = {};
 
 window.ornaments = {
 
@@ -21,7 +22,6 @@ window.ornaments = {
   OVERLAY_OPACITY: 0.6,
 
   setup: function () {
-    this._portals = {};
     var layerGroup = L.layerGroup;
     if (window.map.options.preferCanvas && L.Browser.canvas) {
       layerGroup = L.canvasIconLayer;
@@ -65,11 +65,11 @@ window.ornaments = {
 
   removePortal: function (portal) {
     var guid = portal.options.guid;
-    if (this._portals[guid]) {
-      this._portals[guid].forEach(function (marker) {
+    if (_portals[guid]) {
+      _portals[guid].forEach(function (marker) {
         marker.options.layer.removeLayer(marker);
       });
-      delete this._portals[guid];
+      delete _portals[guid];
     }
   }
 };
