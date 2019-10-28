@@ -17,8 +17,8 @@ if (document.documentElement.getAttribute('itemscope') !== null) {
 window.iitcBuildDate = '@@BUILDDATE@@';
 
 // disable vanilla JS
-window.onload = function() {};
-document.body.onload = function() {};
+window.onload = function () { };
+document.body.onload = function () { };
 
 //originally code here parsed the <Script> tags from the page to find the one that defined the PLAYER object
 //however, that's already been executed, so we can just access PLAYER - no messing around needed!
@@ -34,13 +34,13 @@ if (!window.PLAYER || !PLAYER.nickname) {
     throw new Error("Logged in but page doesn't have player data");
   }
   // FIXME: handle nia takedown in progress
-  
+
   // add login form stylesheet
   var style = document.createElement('style');
   style.type = 'text/css';
   style.appendChild(document.createTextNode('@@INCLUDESTRING:login.css@@'));
   document.head.appendChild(style);
-  
+
   throw new Error("Couldn't retrieve player data. Are you logged in?");
 }
 
@@ -103,8 +103,8 @@ window.REFRESH = 30; // refresh view every 30s (base time)
 window.ZOOM_LEVEL_ADJ = 5; // add 5 seconds per zoom level
 window.ON_MOVE_REFRESH = 2.5;  //refresh time to use after a movement event
 window.MINIMUM_OVERRIDE_REFRESH = 10; //limit on refresh time since previous refresh, limiting repeated move refresh rate
-window.REFRESH_GAME_SCORE = 15*60; // refresh game score every 15 minutes
-window.MAX_IDLE_TIME = 15*60; // stop updating map after 15min idling
+window.REFRESH_GAME_SCORE = 15 * 60; // refresh game score every 15 minutes
+window.MAX_IDLE_TIME = 15 * 60; // stop updating map after 15min idling
 window.HIDDEN_SCROLLBAR_ASSUMED_WIDTH = 20;
 window.SIDEBAR_WIDTH = 300;
 
@@ -121,10 +121,10 @@ window.FIELD_MU_DISPLAY_POINT_TOLERANCE = 60
 window.COLOR_SELECTED_PORTAL = '#f0f';
 window.COLORS = ['#FF6600', '#0088FF', '#03DC03']; // none, res, enl
 window.COLORS_LVL = ['#000', '#FECE5A', '#FFA630', '#FF7315', '#E40000', '#FD2992', '#EB26CD', '#C124E0', '#9627F4'];
-window.COLORS_MOD = {VERY_RARE: '#b08cff', RARE: '#73a8ff', COMMON: '#8cffbf'};
+window.COLORS_MOD = { VERY_RARE: '#b08cff', RARE: '#73a8ff', COMMON: '#8cffbf' };
 
 
-window.MOD_TYPE = {RES_SHIELD:'Shield', MULTIHACK:'Multi-hack', FORCE_AMP:'Force Amp', HEATSINK:'Heat Sink', TURRET:'Turret', LINK_AMPLIFIER: 'Link Amp'};
+window.MOD_TYPE = { RES_SHIELD: 'Shield', MULTIHACK: 'Multi-hack', FORCE_AMP: 'Force Amp', HEATSINK: 'Heat Sink', TURRET: 'Turret', LINK_AMPLIFIER: 'Link Amp' };
 
 // circles around a selected portal that show from where you can hack
 // it and how far the portal reaches (i.e. how far links may be made
@@ -188,7 +188,7 @@ window.overlayStatus = {};
 
 // plugin framework. Plugins may load earlier than iitc, so don’t
 // overwrite data
-if(typeof window.plugin !== 'function') window.plugin = function() {};
+if (typeof window.plugin !== 'function') window.plugin = function () { };
 
 var ulog = (function (module) {
   @@INCLUDERAW:external/ulog.min.js@@
