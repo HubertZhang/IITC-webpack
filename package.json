@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "jquery-ui": "^1.12.1",
     "leaflet": "^1.5.1",
     "overlapping-marker-spiderfier-leaflet": "^0.2.7"
